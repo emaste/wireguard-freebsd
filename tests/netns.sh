@@ -61,8 +61,10 @@ cleanup() {
 	for iface in wg1 wg2; do
 		pretty "" "Awaiting return of ${iface}"
 		# Give interfaces a second to return
-		while ! ifconfig ${iface} &> /dev/null; do
+		cnt=0
+		while ! ifconfig ${iface} &> /dev/null && [ $cnt -lt 100 ]; do
 			sleep 0.1
+			cnt=$(($cnt + 1))
 		done
 		ifconfig ${iface} destroy
 	done
